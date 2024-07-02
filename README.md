@@ -19,7 +19,7 @@ The home page of the JOSAA Analysis portal provides a user-friendly interface to
 - Analyze institute wise cut-off trends
 - Roundwise cut-off Analysis 
 
-- ![home]()
+- ![home](https://github.com/priyanshuraj30/josaa-portal-analysis/assets/106574419/db2eb91a-38c4-4357-9720-08e015a7f065)
 
 ## View Institute wise cut-off list page
 - Upon clicking this option, a list of all IITs is shown along with their NIRF ranking(2023), Location and their established year. So the users can select specific institutes and explore the corresponding cut-off data.
