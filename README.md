@@ -37,7 +37,7 @@ The home page of the JOSAA Analysis portal provides a user-friendly interface to
   
 - Upon sleecting the gender, branch and institute, user will get the cut-off analysis for each branch present at that IIT.
 
-- ![Screenshot (22)](https://github.com/priyanshuraj30/josaa-portal-analysis/issues/5#issue-2386874173)
+- ![Screenshot (22)](https://github.com/priyanshuraj30/josaa-portal-analysis/assets/106574419/d311f9ce-55a4-40e9-a6b3-e85ae502140d)
 
 ## Roundwise cut-off Analysis
 - Round trends highlight the general trend of closing ranks throughout the rounds of the counselling process. This helps understand the likely range of changes to the closing ranks throught the counselling proces.
