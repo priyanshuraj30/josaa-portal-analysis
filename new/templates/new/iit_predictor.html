@@ -1,0 +1,139 @@
+{% extends "new/iit_base.html" %}
+
+{% block script %}
+<script>
+    let selectedSeatType = '';
+    let selectedGender = '';
+
+    function changeSeatType(seatType) {
+        selectedSeatType = seatType;
+        document.getElementById('seatTypeDropdown').innerText = seatType;
+    }
+
+    function changeGender(gender) {
+        selectedGender = gender;
+        document.getElementById('genderDropdown').innerText = gender;
+    }
+
+    var admissionsData = JSON.parse('{{ admissions_data|escapejs }}');
+
+    function filterData() {
+        const jeeAdvRank = document.getElementById('jeeAdvRank').value;
+
+        const filteredData = admissionsData.filter(adm => {
+            const fields = adm.fields;
+            return fields.year === 2022 &&
+                   fields.closing_rank > 0.9*jeeAdvRank &&
+                   (!selectedGender || fields.gender === selectedGender) &&
+                   (!selectedSeatType || fields.seat_type === selectedSeatType);
+        });
+
+        // Sort the filtered data by closing rank in increasing order
+        filteredData.sort((a, b) => a.fields.closing_rank - b.fields.closing_rank);
+
+        const tableBody = document.getElementById('admissionsTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = '';
+
+        filteredData.forEach(adm => {
+            const fields = adm.fields;
+            const branch = fields.academic_program_name.split('(')[0].trim();
+            const row = tableBody.insertRow();
+            row.insertCell(0).innerText = fields.institute;
+            row.insertCell(1).innerText = branch;
+            row.insertCell(2).innerText = fields.closing_rank;
+        });
+        // Attach the dynamic search event listener after updating the table
+        document.getElementById('searchInput').addEventListener('input', searchTable);
+    }
+
+    function searchTable() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const table = document.getElementById('admissionsTable');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            let showRow = false;
+            const cells = rows[i].getElementsByTagName('td');
+            for (let j = 0; j < cells.length; j++) {
+                const cellContent = cells[j].innerText.toLowerCase();
+                if (cellContent.includes(searchInput)) {
+                    showRow = true;
+                    break;
+                }
+            }
+            rows[i].style.display = showRow ? '' : 'none';
+        }
+    }
+
+    // Attach the dynamic search event listener on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('searchInput').addEventListener('input', searchTable);
+    });
+</script>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card" style="text-align: center;">
+            <h3>Closing Rank Filter</h3>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title" style="text-align: center;">Possibilities ref. JEE Adv Rank</h5>
+            <div class="filter-container d-flex justify-content-center align-items-center">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle ml-3" type="button" id="seatTypeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Seat Type
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="seatTypeDropdown">
+                        <a class="dropdown-item" href="#" onclick="changeSeatType('OPEN')">OPEN</a>
+                        <a class="dropdown-item" href="#" onclick="changeSeatType('EWS')">EWS</a>
+                        <a class="dropdown-item" href="#" onclick="changeSeatType('OBC-NCL')">OBC-NCL</a>
+                        <a class="dropdown-item" href="#" onclick="changeSeatType('SC')">SC</a>
+                        <a class="dropdown-item" href="#" onclick="changeSeatType('ST')">ST</a>
+                        <a class="dropdown-item" href="#" onclick="changeSeatType('OPEN (PwD)')">OPEN (PwD)</a>
+                        <a class="dropdown-item" href="#" onclick="changeSeatType('EWS (PwD)')">EWS (PwD)</a>
+                        <a class="dropdown-item" href="#" onclick="changeSeatType('OBC-NCL (PwD)')">OBC-NCL (PwD)</a>
+                        <a class="dropdown-item" href="#" onclick="changeSeatType('SC (PwD)')">SC (PwD)</a>
+                        <a class="dropdown-item" href="#" onclick="changeSeatType('ST (PwD)')">ST (PwD)</a>
+                    </div>
+                </div>
+                <div class="dropdown ml-3">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="genderDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Gender
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="genderDropdown">
+                        <a class="dropdown-item" href="#" onclick="changeGender('Gender-Neutral')">Gender-Neutral</a>
+                        <a class="dropdown-item" href="#" onclick="changeGender('Female-only (including Supernumerary)')">Female</a>
+                    </div>
+                </div>
+                <div class="form-group ml-3 mb-0 justify-content-center align-items-center">
+                    <label for="jeeAdvRank">JEE Adv Rank:</label>
+                    <input type="number" id="jeeAdvRank" name="jeeAdvRank" class="form-control d-inline" style="width: 150px;" required>
+                </div>
+                <div class="ml-3">
+                    <button type="button" class="btn btn-primary" onclick="filterData()">Filter</button>
+                </div>
+            </div>
+            <div class="search-container d-flex justify-content-center align-items-center mt-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by IIT/Branch" style="width: 200px;">
+            </div>
+            <table id="admissionsTable" class="table table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>Institute</th>
+                        <th>Branch</th>
+                        <th>Last Year's Closing Rank</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

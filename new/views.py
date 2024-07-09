@@ -57,6 +57,33 @@ def insti_cutoff(request):
 
     return render(request, "new/insti_cutoff.html", context)
 
+def iit_predictor(request):
+    # Get the distinct years
+    years = Admission.objects.values('year').distinct()
+
+    admissions_data = []
+    for year in years:
+        # Get the maximum round number for the current year
+        max_round = (
+            Admission.objects.filter(year=year['year'])
+            .order_by('-round')
+            .values('round')
+            .first()
+        )
+
+        if max_round is not None:
+            # Get the rows with the maximum round number for the current year
+            rows = Admission.objects.filter(year=year['year'], round=max_round['round'])
+            admissions_data.extend(rows)
+
+    serialized_data = serializers.serialize('json', admissions_data)
+
+    context = {
+        'admissions_data': serialized_data,
+    }
+
+    return render(request, "new/iit_predictor.html", context)
+
 
 
 

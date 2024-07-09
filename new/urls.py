@@ -9,5 +9,6 @@ urlpatterns = [
     # path('iitb/',views.iitb,name='iitb'),
     path('iitb/<str:college>/', views.iitb, name='iitb'),
     path('insti_cutoff/', views.insti_cutoff, name='insti_cutoff'),
+    path('iit_predictor/', views.iit_predictor, name='iit_predictor')
     # path('iitb/',AdmissionChartView.as_view(),name='iitb'),
 ]
